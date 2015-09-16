@@ -6,6 +6,8 @@
 void generateMap(int n);
 void addNoise(std::vector<std::vector<int> > &mapRep);
 void digMap(std::vector<std::vector<int> > &mapRep);
+void dig(std::vector<std::vector<char> > &dugMap, std::vector<std::vector<char> > &mapRep, int level, int digPoint);
+void displayDugMap(std::vector<std::vector<char> > &mapRep);
 void displayMap(std::vector<std::vector<int> > &mapRep);
 
 int main(int argc, char **argv) {
@@ -31,20 +33,20 @@ void generateMap(int n) {
     addNoise(mapRep);
 
     // Dig through map
-    // TODO
+    digMap(mapRep);
 
     // Display map
-    displayMap(mapRep);
+    //displayMap(mapRep);
 
 }
 
 void addNoise(std::vector<std::vector<int> > &mapRep) {
 
-    unsigned int max = 5;
+    unsigned int max = 2000;
     unsigned int min = 0;
 
-    std::srand(0); // For testing only
-    //std::srand(std::time(0));
+    //std::srand(0); // For testing only
+    std::srand(std::time(0));
 
     for (auto it = mapRep.begin(); it < mapRep.end(); ++it) {
         for (auto it2 = (*it).begin(); it2 < (*it).end(); ++it2) {
@@ -54,9 +56,64 @@ void addNoise(std::vector<std::vector<int> > &mapRep) {
 }
 
 void digMap(std::vector<std::vector<int> > &mapRep) {
-    return;
+    
+    unsigned int digPoint = std::rand() % mapRep.size();
+    unsigned int level = 0;
+
+    // Fill dug map with "soil" -> 0
+    std::vector<std::vector<char> > dugMap = std::vector<std::vector<char> >(mapRep.size());
+    for (auto it = dugMap.begin(); it < dugMap.end(); ++it) {
+        *(it) = std::vector<char>(mapRep.size());
+        for (auto it2 = (*it).begin(); it2 < (*it).end(); ++it2) {
+            *it2 = '0';
+        }
+    }
+
+    // Dig through the map
+    /*// Brute force
+
+    while (level != mapRep.size()) {
+        int curr = mapRep[level][digPoint];
+        dugMap[level][digPoint] = ' ';
+
+        if (mapRep[level + 1][digPoint] < curr) {
+            level = level + 1;
+            continue;
+        } else if (digPoint - 1 >= 0) {
+            if ( mapRep[level][digPoint - 1] < curr) {
+                digPoint = digPoint - 1;
+                continue;
+            }
+        }
+            
+        if (mapRep[level][digPoint + 1] < curr) {
+            digPoint = digPoint + 1;
+            continue;
+        } else {
+            level = mapRep.size();
+        } 
+    }
+    *//
+
+    // Recursive
+    dig(dugMap, mapRep, level, digPoint);
+
+    displayDugMap(dugMap);
+
 }
 
+void dig(std::vector<std::vector<char> > &dugMap, std::vector<std::vector<char> > &mapRep, int level, int digPoint) {
+
+}
+
+void displayDugMap(std::vector<std::vector<char> > &mapRep) {
+    for (auto it = mapRep.begin(); it < mapRep.end(); ++it) {
+        for (auto it2 = (*it).begin(); it2 < (*it).end(); ++it2) {
+            std::cout << ' ' << *(it2);
+        }
+        std::cout << std::endl;
+    }
+}
 
 void displayMap(std::vector<std::vector<int> > &mapRep) {
     for (auto it = mapRep.begin(); it < mapRep.end(); ++it) {
