@@ -6,7 +6,7 @@
 void generateMap(int n);
 void addNoise(std::vector<std::vector<int> > &mapRep);
 void digMap(std::vector<std::vector<int> > &mapRep);
-void dig(std::vector<std::vector<char> > &dugMap, std::vector<std::vector<char> > &mapRep, int level, int digPoint);
+void dig(std::vector<std::vector<char> > &dugMap, std::vector<std::vector<int> > &mapRep, unsigned int level, unsigned int digPoint);
 void displayDugMap(std::vector<std::vector<char> > &mapRep);
 void displayMap(std::vector<std::vector<int> > &mapRep);
 
@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
 void generateMap(int n) {
 
     std::cout << n << std::endl;
-
+    
     // Create empty map
     std::vector<std::vector<int> > mapRep = std::vector<std::vector<int> >(n);
     for (auto it = mapRep.begin(); it < mapRep.end(); ++it) {
@@ -36,13 +36,14 @@ void generateMap(int n) {
     digMap(mapRep);
 
     // Display map
+    //std::cout << std::endl;
     //displayMap(mapRep);
 
 }
 
 void addNoise(std::vector<std::vector<int> > &mapRep) {
 
-    unsigned int max = 2000;
+    unsigned int max = 9;
     unsigned int min = 0;
 
     //std::srand(0); // For testing only
@@ -56,9 +57,10 @@ void addNoise(std::vector<std::vector<int> > &mapRep) {
 }
 
 void digMap(std::vector<std::vector<int> > &mapRep) {
-    
+
     unsigned int digPoint = std::rand() % mapRep.size();
     unsigned int level = 0;
+
 
     // Fill dug map with "soil" -> 0
     std::vector<std::vector<char> > dugMap = std::vector<std::vector<char> >(mapRep.size());
@@ -93,16 +95,42 @@ void digMap(std::vector<std::vector<int> > &mapRep) {
             level = mapRep.size();
         } 
     }
-    *//
+    */
 
     // Recursive
+
     dig(dugMap, mapRep, level, digPoint);
 
     displayDugMap(dugMap);
 
 }
 
-void dig(std::vector<std::vector<char> > &dugMap, std::vector<std::vector<char> > &mapRep, int level, int digPoint) {
+void dig(std::vector<std::vector<char> > &dugMap, std::vector<std::vector<int> > &mapRep, unsigned int level, unsigned int digPoint) {
+
+    // Exit case
+    if (level >= mapRep.size()) return;
+    //std::cout << level << std::endl;
+    // Recursion
+    dugMap[level][digPoint] = ' '; 
+    int curr = mapRep[level][digPoint];
+
+    if (level + 1 <= mapRep.size()) {
+        if (mapRep[level + 1][digPoint] < curr) {
+            dig(dugMap, mapRep, level + 1, digPoint);
+        } 
+    }
+    if (digPoint + 1 <= mapRep.size()) {
+        if (mapRep[level][digPoint + 1] < curr) {
+            dig(dugMap, mapRep, level, digPoint + 1);
+        }
+    }
+    if (digPoint - 1 >= 0) {
+        if (mapRep[level][digPoint - 1] < curr) {
+            dig(dugMap, mapRep, level, digPoint - 1);
+        }
+    }
+
+    return;
 
 }
 
